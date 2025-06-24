@@ -17,8 +17,9 @@ void main() {
   });
 
   test('clear_app_data', () async {
-    // CacheKit cacheKitPlugin = CacheKit(saveDirectory: 'test');
-    MockCacheKitPlatform fakePlatform = MockCacheKitPlatform();
+    final fakePlatform = MockCacheKitPlatform();
     CacheKitPlatform.instance = fakePlatform;
+    expect(await CacheKitPlatform.instance.clearAppData(), isTrue);
   });
 }
+

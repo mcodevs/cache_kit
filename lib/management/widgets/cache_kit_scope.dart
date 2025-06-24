@@ -1,5 +1,5 @@
 import 'package:cache_kit/cache_kit.dart';
-import 'package:cache_kit/managment/data/interfaces/cache_kit_interface.dart';
+import 'package:cache_kit/management/data/interfaces/cache_kit_interface.dart';
 import 'package:flutter/material.dart';
 
 class CacheKitScope extends StatelessWidget {

@@ -2,9 +2,9 @@ import 'dart:io' show Directory, File, Platform;
 import 'dart:typed_data' show Uint8List;
 
 import 'package:cache_kit/cache_kit_platform_interface.dart';
-import 'package:cache_kit/managment/data/extensions/extensions.dart';
-import 'package:cache_kit/managment/data/interfaces/cache_kit_interface.dart';
-import 'package:cache_kit/managment/data/models/media_type.dart';
+import 'package:cache_kit/management/data/extensions/extensions.dart';
+import 'package:cache_kit/management/data/interfaces/cache_kit_interface.dart';
+import 'package:cache_kit/management/data/models/media_type.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Main entry point for *cache_kit*: a platform‑agnostic cache manager.
