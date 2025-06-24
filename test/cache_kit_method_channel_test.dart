@@ -27,3 +27,4 @@ void main() {
     expect(await platform.clearAppData(), true);
   });
 }
+

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:cache_kit/managment/data/models/media_type.dart';
+import 'package:cache_kit/management/data/models/media_type.dart';
 
 /// Contract that defines all cache‑management operations used by *cache_kit*.
 ///
