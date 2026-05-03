@@ -98,6 +98,11 @@ class MyWidget extends StatelessWidget {
 | `getFileCount(MediaType)` | Fayllar soni |
 | `getTotalSize(MediaType)` | Umumiy hajm (bayt) |
 | `clearCache({List<MediaType>? types})` | Tanlangan / barcha turdagi fayllarni o‘chiradi |
+| `removeFile(String fileName, {MediaType? mediaType}) → Future<bool>` | Bitta faylni o‘chirish |
+| `exists(String fileName, {MediaType? mediaType}) → Future<bool>` | Fayl mavjudligini tekshirish |
+| `getTotalSizeByType() → Future<Map<MediaType, int>>` | Har bir media turining hajmi |
+| `purgeExpired(Duration maxAge, {List<MediaType>? types}) → Future<int>` | Eskirgan fayllarni tozalash |
+| `enforceMaxSize(int maxBytes, {List<MediaType>? types}) → Future<int>` | Limitdan oshsa LRU bo‘yicha tozalash |
 | `clearAppData()` | Ilovaning **barcha** kesh va hujjat kataloglarini tozalaydi (Android/iOS/macOS/...) |
 
 ---

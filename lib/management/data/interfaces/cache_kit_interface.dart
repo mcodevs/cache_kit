@@ -39,6 +39,24 @@ abstract class CacheKitInterface {
   /// Delete cached files for the provided [types]; if `null`, clears *all* caches.
   Future<void> clearCache({List<MediaType>? types});
 
+  /// Remove a single cached file. Returns `true` when a file was deleted.
+  Future<bool> removeFile(String fileName, {MediaType? mediaType});
+
+  /// Check whether a specific cached file exists.
+  Future<bool> exists(String fileName, {MediaType? mediaType});
+
+  /// Return a map of `MediaType -> total bytes` for quick cache inspection.
+  Future<Map<MediaType, int>> getTotalSizeByType();
+
+  /// Purge files older than [maxAge] and return deleted file count.
+  Future<int> purgeExpired(Duration maxAge, {List<MediaType>? types});
+
+  /// Ensure selected cache types do not exceed [maxBytes].
+  ///
+  /// Oldest files are removed first (based on last modified timestamp).
+  /// Returns deleted file count.
+  Future<int> enforceMaxSize(int maxBytes, {List<MediaType>? types});
+
   /// Remove application‑level cache and temp data (may be platform‑limited).
   Future<void> clearAppData();
 }

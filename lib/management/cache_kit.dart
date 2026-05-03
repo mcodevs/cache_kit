@@ -108,6 +108,24 @@ class CacheKit extends CacheKitInterface {
     }
   }
 
+  @override
+  Future<bool> removeFile(String fileName, {MediaType? mediaType}) async {
+    final file = await getFile(fileName, mediaType: mediaType);
+    if (file == null) return false;
+    try {
+      await file.delete();
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> exists(String fileName, {MediaType? mediaType}) async {
+    final file = await getFile(fileName, mediaType: mediaType);
+    return file != null;
+  }
+
   /// Count cached files belonging to [mediaType].
   @override
   Future<int> getFileCount(MediaType mediaType) async {
@@ -128,6 +146,81 @@ class CacheKit extends CacheKitInterface {
       } catch (_) {}
     }
     return totalBytes;
+  }
+
+  @override
+  Future<Map<MediaType, int>> getTotalSizeByType() async {
+    final result = <MediaType, int>{};
+    for (final type in MediaType.values) {
+      result[type] = await getTotalSize(type);
+    }
+    return result;
+  }
+
+  @override
+  Future<int> purgeExpired(Duration maxAge, {List<MediaType>? types}) async {
+    final mediaTypes = types ?? MediaType.values;
+    final now = DateTime.now();
+    var deleted = 0;
+
+    for (final type in mediaTypes) {
+      final directory = await getMediaDirectory(type);
+      final files = directory.listSync().whereType<File>();
+      for (final file in files) {
+        try {
+          final modified = await file.lastModified();
+          if (now.difference(modified) >= maxAge) {
+            await file.delete();
+            deleted++;
+          }
+        } catch (_) {}
+      }
+    }
+
+    return deleted;
+  }
+
+  @override
+  Future<int> enforceMaxSize(int maxBytes, {List<MediaType>? types}) async {
+    if (maxBytes < 0) {
+      throw ArgumentError.value(maxBytes, 'maxBytes', 'Must be >= 0');
+    }
+
+    final mediaTypes = types ?? MediaType.values;
+    final files = <File>[];
+
+    for (final type in mediaTypes) {
+      final directory = await getMediaDirectory(type);
+      files.addAll(directory.listSync().whereType<File>());
+    }
+
+    final filesWithMeta = <({File file, DateTime modified, int size})>[];
+    var totalBytes = 0;
+
+    for (final file in files) {
+      try {
+        final size = await file.length();
+        final modified = await file.lastModified();
+        filesWithMeta.add((file: file, modified: modified, size: size));
+        totalBytes += size;
+      } catch (_) {}
+    }
+
+    if (totalBytes <= maxBytes) return 0;
+
+    filesWithMeta.sort((a, b) => a.modified.compareTo(b.modified));
+
+    var deleted = 0;
+    for (final entry in filesWithMeta) {
+      if (totalBytes <= maxBytes) break;
+      try {
+        await entry.file.delete();
+        totalBytes -= entry.size;
+        deleted++;
+      } catch (_) {}
+    }
+
+    return deleted;
   }
 
   /// Invoke platform‑native full‑data clean‑up; falls back to manual deletion.
